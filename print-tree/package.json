@@ -1,0 +1,11 @@
+{
+  "name": "print-tree",
+  "version": "1.0.0",
+  "main": "print-tree.js",
+  "scripts": {
+    "start": "node print-tree.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
