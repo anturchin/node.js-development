@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "main": "print-tree.js",
   "scripts": {
-    "start": "node print-tree.js"
+    "start": "node print-tree.js",
+    "test": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
