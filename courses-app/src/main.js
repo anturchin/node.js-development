@@ -1,14 +1,15 @@
 import http from 'node:http';
-import express from 'express';
+import app from './app.js';
+class Main {
+	constructor() {
+		this.port = process.env.PORT || 8000;
+		this.server = http.createServer(app);
+		this.run();
+	}
 
-const app = express();
+	run() {
+		this.server.listen(this.port, () => console.log('server is running...'));
+	}
+}
 
-app.use((req, res) => {
-	res.send('hello from express!');
-});
-
-const port = process.env.PORT || 8000;
-
-const server = http.createServer(app);
-
-server.listen(port, () => console.log('server is running...'));
+new Main();
