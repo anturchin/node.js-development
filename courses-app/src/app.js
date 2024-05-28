@@ -14,7 +14,6 @@ class App {
 	}
 
 	initialize() {
-		console.log('hello');
 		this.app.use('/api/auth', authRoutes);
 		this.app.use('/api/courses', courseRoutes);
 		this.app.use('/api/users', userRoutes);

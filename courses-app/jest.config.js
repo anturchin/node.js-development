@@ -1,4 +1,9 @@
 export default {
+	transform: {
+		'^.+\\.js$': 'babel-jest',
+	},
 	testEnvironment: 'node',
-	transform: {},
+	moduleNameMapper: {
+		'^(\\.{1,2}/.*)\\.js$': '$1',
+	},
 };
