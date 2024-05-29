@@ -1,16 +1,16 @@
 import request from 'supertest';
-import app from '../app.js';
+import App from '../app/App.js';
 
 describe('Course API', () => {
 	it('should fetch all courses', async () => {
-		const response = await request(app).get('/api/courses');
+		const response = await request(new App().getApp()).get('/courses');
 		expect(response.statusCode).toBe(200);
 		expect(response.body).toBeInstanceOf(Array);
 	});
 
 	it('should create a new course', async () => {
-		const response = await request(app)
-			.post('/api/courses')
+		const response = await request(new App().getApp())
+			.post('/courses')
 			.send({
 				title: 'Test Course',
 				description: 'A course for testing',

@@ -8,4 +8,4 @@ class CourseController {
 	}
 }
 
-export default new CourseController();
+export default CourseController;
