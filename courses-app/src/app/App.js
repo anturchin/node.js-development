@@ -2,7 +2,7 @@ import express from 'express';
 import AuthRoutes from '../routes/authRoutes/AuthRoutes.js';
 import CourseRoutes from '../routes/courseRoutes/CourseRoutes.js';
 import UserRoutes from '../routes/userRoutes/UserRoutes.js';
-import { json } from 'express';
+import bodyParser from 'body-parser';
 
 class App {
 	constructor() {
@@ -18,7 +18,7 @@ class App {
 	}
 
 	middleware() {
-		this.app.use(json());
+		this.app.use(bodyParser.json());
 	}
 
 	initialize() {
