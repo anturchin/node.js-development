@@ -3,14 +3,14 @@ import App from '../app/App.js';
 
 describe('Course API', () => {
 	test('should fetch all courses', async () => {
-		const response = await request(new App().getApp()).get('/courses');
+		const response = await request(new App().getApp()).get('/api/courses');
 		expect(response.statusCode).toBe(200);
 		expect(response.body).toBeInstanceOf(Array);
 	});
 
 	test('should create a new course', async () => {
 		const response = await request(new App().getApp())
-			.post('/courses')
+			.post('/api/courses')
 			.send({
 				title: 'Test Course',
 				description: 'A course for testing',

@@ -4,7 +4,7 @@ import App from '../app/App.js';
 describe('Auth API', () => {
 	test('should register a new user', async () => {
 		const response = await request(new App().getApp())
-			.post('/auth/register')
+			.post('/api/auth/register')
 			.send({ username: 'testuser', email: 'testuser@example.com', password: 'password' });
 		expect(response.statusCode).toBe(201);
 		expect(response.body).toHaveProperty('message', 'User registered successfully');
@@ -12,7 +12,7 @@ describe('Auth API', () => {
 
 	test('should login a user', async () => {
 		const response = await request(new App().getApp())
-			.post('/auth/login')
+			.post('/api/auth/login')
 			.send({ email: 'testuser@example.com', password: 'password' });
 		expect(response.statusCode).toBe(200);
 		expect(response.body).toHaveProperty('token');

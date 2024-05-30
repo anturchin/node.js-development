@@ -1,7 +1,7 @@
 {
 	"name": "courses-app",
 	"version": "1.0.0",
-	"main": "src/main.js",
+	"main": "src/Main.js",
 	"type": "module",
 	"scripts": {
 		"dev": "nodemon",

@@ -3,8 +3,7 @@ import App from './app/App.js';
 class Main {
 	constructor() {
 		this.port = process.env.PORT || 8000;
-		this.app = new App();
-		this.server = http.createServer(this.app.getApp());
+		this.server = http.createServer(new App().getApp());
 		this.run();
 		this.onError();
 	}
