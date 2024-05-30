@@ -2,13 +2,13 @@ import request from 'supertest';
 import App from '../app/App.js';
 
 describe('Course API', () => {
-	it('should fetch all courses', async () => {
+	test('should fetch all courses', async () => {
 		const response = await request(new App().getApp()).get('/courses');
 		expect(response.statusCode).toBe(200);
 		expect(response.body).toBeInstanceOf(Array);
 	});
 
-	it('should create a new course', async () => {
+	test('should create a new course', async () => {
 		const response = await request(new App().getApp())
 			.post('/courses')
 			.send({

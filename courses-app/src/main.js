@@ -6,10 +6,19 @@ class Main {
 		this.app = new App();
 		this.server = http.createServer(this.app.getApp());
 		this.run();
+		this.onError();
+	}
+
+	onError() {
+		this.server.on('error', (error) => {
+			if (error.code === 'EACCES') {
+				console.log(`no access to port: ${this.port}`);
+			}
+		});
 	}
 
 	run() {
-		this.server.listen(this.port, () => console.log('server is running...'));
+		this.server.listen(this.port, () => console.log(`server is running on port ${this.port}`));
 	}
 }
 
