@@ -27,7 +27,7 @@ class App {
 		this.app.use('/api/users', new UserRoutes().getRouter());
 
 		this.app.all('*', (req, res, next) => {
-			next(new AppError(`Cannot find path: < ${req.originalUrl} > on this server!`, 404));
+			next(new AppError(`Cannot find path: ${req.originalUrl} on this server!`, 404));
 		});
 	}
 
