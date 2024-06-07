@@ -1,10 +1,24 @@
+import Course from '../../models/course/Course.js';
+
 class CourseController {
 	async getAllCourses(req, res) {
-		res.status(200).send([{ title: 'Sample Course' }]);
+		try {
+			const courses = await Course.find();
+			res.status(200).send(courses);
+		} catch (err) {
+			res.status(500).send({ message: 'Error fetching courses', error: err.message });
+		}
 	}
 
 	async createCourse(req, res) {
-		res.status(201).send({ message: 'Course created successfully' });
+		try {
+			const { title, description } = req.body;
+			const course = new Course({ title, description });
+			await course.save();
+			res.status(201).send({ message: 'Course created successfully' });
+		} catch (err) {
+			res.status(500).send({ message: 'Error creating course', error: err.message });
+		}
 	}
 }
 

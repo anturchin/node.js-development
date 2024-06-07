@@ -4,13 +4,12 @@ import AuthRoutes from '../routes/authRoutes/AuthRoutes.js';
 import CourseRoutes from '../routes/courseRoutes/CourseRoutes.js';
 import UserRoutes from '../routes/userRoutes/UserRoutes.js';
 import AppError from '../utils/AppError.js';
+import DataBase from '../db/DataBase.js';
 
 class App {
 	constructor() {
 		this.app = express();
-		this.initializeMiddleware();
-		this.initializeRoutes();
-		this.initializeErrorHandling();
+		this.init();
 	}
 
 	getApp() {
@@ -26,7 +25,7 @@ class App {
 		this.app.use('/api/courses', new CourseRoutes().getRouter());
 		this.app.use('/api/users', new UserRoutes().getRouter());
 
-		this.app.all('*', (req, res, next) => {
+		this.app.all((req, res, next) => {
 			next(new AppError(`Cannot find path: ${req.originalUrl} on this server!`, 404));
 		});
 	}
@@ -45,6 +44,13 @@ class App {
 				});
 			}
 		});
+	}
+
+	async init() {
+		await DataBase.connect();
+		this.initializeMiddleware();
+		this.initializeRoutes();
+		this.initializeErrorHandling();
 	}
 }
 
