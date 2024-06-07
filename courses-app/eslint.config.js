@@ -3,7 +3,7 @@ import prettierPlugin from 'eslint-plugin-prettier';
 
 export default [
 	{
-		ignores: ['node_modules/**'],
+		ignores: ['node_modules/**', 'coverage/**'],
 	},
 	{
 		files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
