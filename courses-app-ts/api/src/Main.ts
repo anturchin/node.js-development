@@ -1,41 +1,52 @@
 import http from 'node:http';
-import cluster from 'node:cluster';
-import os from 'node:os';
 
+import DataBase from './db/DataBase';
 import App from './app/App';
 
 class Main {
-    private port: number;
+    private readonly port: number = parseInt(process.env.PORT || '', 10) || 8000;
+
+    private readonly server: http.Server;
 
     constructor() {
-        this.port = parseInt(process.env.PORT || '', 10) || 8000;
+        this.server = http.createServer(new App().getApp());
     }
 
-    public run(): void {
-        if (cluster.isPrimary) {
-            const numCPUs = os.cpus().length;
-            console.log(`Master ${process.pid} is running`);
+    public async run(): Promise<void> {
+        const dbUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/courses';
+        await DataBase.connect(dbUri);
 
-            for (let i = 0; i < numCPUs; i += 1) {
-                cluster.fork();
-            }
-        } else {
-            const server = http.createServer(new App().getApp());
-            this.onError(server);
-            server.listen(this.port, () => {
-                console.log(`Worker ${process.pid} started, listening on port ${this.port}`);
-            });
-        }
+        this.onError(this.server);
+        this.server.listen(this.port, () => {
+            console.log(`Server started, listening on port ${this.port}`);
+        });
+
+        this.handleExit();
     }
 
     private onError(server: http.Server): void {
-        server.on('error', (error: NodeJS.ErrnoException) => {
+        server.on('error', async (error: NodeJS.ErrnoException) => {
             if (error.code === 'EACCES') {
                 console.log(`no access to port: ${this.port}`);
+                await DataBase.disconnect();
                 process.exit(1);
             } else {
                 throw error;
             }
+        });
+    }
+
+    private handleExit(): void {
+        process.on('SIGINT', async () => {
+            console.log('Shutting down gracefully...');
+            await DataBase.disconnect();
+            process.exit(0);
+        });
+
+        process.on('SIGTERM', async () => {
+            console.log('Shutting down gracefully...');
+            await DataBase.disconnect();
+            process.exit(0);
         });
     }
 }

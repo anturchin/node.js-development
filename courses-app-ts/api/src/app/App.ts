@@ -4,7 +4,6 @@ import AuthRoutes from '../routes/authRoutes/AuthRoutes';
 import CourseRoutes from '../routes/courseRoutes/CourseRoutes';
 import UserRoutes from '../routes/userRoutes/UserRoutes';
 import AppError from '../utils/AppError';
-import DataBase from '../db/DataBase';
 
 class App {
     private app: Express;
@@ -50,8 +49,7 @@ class App {
         );
     }
 
-    private async init(): Promise<void> {
-        await DataBase.connect();
+    private init(): void {
         this.initializeMiddleware();
         this.initializeRoutes();
         this.initializeErrorHandling();

@@ -2,7 +2,7 @@
     "globals": {
         "NodeJS": true
     },
-    "ignorePatterns": ["src/__tests__/"],
+    "ignorePatterns": ["src/**/*.test.ts"],
     "parser": "@typescript-eslint/parser",
     "plugins": ["prettier", "import", "@typescript-eslint"],
     "extends": [
