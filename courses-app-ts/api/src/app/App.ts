@@ -6,6 +6,9 @@ import UserRoutes from '../routes/userRoutes/UserRoutes';
 import AppError from '../utils/AppError';
 import UserController from '../controllers/userController/UserController';
 import { UserService } from '../services/userService/UserService';
+import CourseController from '../controllers/courseController/CourseController';
+import { CoursesService } from '../services/coursesService/CoursesService';
+import AuthController from '../controllers/authController/AuthController';
 
 class App {
     private app: Express;
@@ -24,8 +27,14 @@ class App {
     }
 
     private initializeRoutes(): void {
-        this.app.use('/api/auth', new AuthRoutes().getRouter());
-        this.app.use('/api/courses', new CourseRoutes().getRouter());
+        this.app.use(
+            '/api/auth',
+            new AuthRoutes(new AuthController(new UserService())).getRouter()
+        );
+        this.app.use(
+            '/api/courses',
+            new CourseRoutes(new CourseController(new CoursesService())).getRouter()
+        );
         this.app.use(
             '/api/users',
             new UserRoutes(new UserController(new UserService())).getRouter()

@@ -1,44 +1,57 @@
 import { NextFunction, Request, Response } from 'express';
-import User from '../../models/user/User';
 import { IUser } from '../../models/user/types';
 import AppError from '../../utils/AppError';
+import { UserService } from '../../services/userService/UserService';
 
 class AuthController {
-    public async register(req: Request, res: Response): Promise<void> {
+    private readonly userService: UserService;
+
+    constructor(userService: UserService) {
+        this.userService = userService;
+    }
+
+    public async register(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { email, username, password } = req.body;
-            const user = new User({ email, username, password });
-            await user.save();
-            res.status(201).send({ message: 'User registered successfully' });
-        } catch (err) {
-            if (err instanceof Error) {
-                res.status(500).send({ message: 'Error registering user', error: err.message });
+
+            if (!email || !username || !password) {
+                throw new AppError('Email, username, and password are required', 400);
             }
+
+            const existingUser = await this.userService.findUserByEmail(email);
+
+            if (existingUser) {
+                throw new AppError('User with this email already exists', 400);
+            } else {
+                const user = await this.userService.createUser({
+                    email,
+                    username,
+                    password,
+                } as IUser);
+                res.status(201).send({
+                    message: 'User created successfully',
+                    username: user.username,
+                    userId: user.id,
+                    role: user.role,
+                });
+            }
+        } catch (err) {
+            next(err);
         }
     }
 
     public async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { email, password } = req.body;
-            const user = await this.findUser({ email, password });
+            const user = await this.userService.findUser({ email, password });
             if (user) {
                 res.status(200).send({ success: 'ok' });
             } else {
-                next(new AppError('Invalid email or password', 401));
+                throw new AppError('Invalid email or password', 401);
             }
         } catch (err) {
-            if (err instanceof Error) {
-                res.status(500).send({ message: 'Error login user', error: err.message });
-            }
+            next(err);
         }
-    }
-
-    private async findUser({
-        email,
-        password,
-    }: Pick<IUser, 'email' | 'password'>): Promise<IUser | null> {
-        const user = await User.findOne({ email, password }).exec();
-        return user;
     }
 }
 

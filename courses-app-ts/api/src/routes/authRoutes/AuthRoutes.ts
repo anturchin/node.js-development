@@ -6,9 +6,9 @@ class AuthRoutes {
 
     private readonly authController: AuthController;
 
-    constructor() {
+    constructor(authController: AuthController) {
         this.router = express.Router();
-        this.authController = new AuthController();
+        this.authController = authController;
         this.initializeRoutes();
     }
 

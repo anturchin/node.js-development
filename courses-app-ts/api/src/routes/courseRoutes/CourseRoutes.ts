@@ -6,9 +6,9 @@ class CourseRoutes {
 
     private readonly courseController: CourseController;
 
-    constructor() {
+    constructor(courseController: CourseController) {
         this.router = express.Router();
-        this.courseController = new CourseController();
+        this.courseController = courseController;
         this.initializeRoutes();
     }
 

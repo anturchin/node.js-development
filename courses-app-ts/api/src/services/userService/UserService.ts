@@ -37,4 +37,12 @@ export class UserService {
         }
         return false;
     }
+
+    public async findUser({
+        email,
+        password,
+    }: Pick<IUser, 'email' | 'password'>): Promise<IUser | null> {
+        const user = await User.findOne({ email, password }).exec();
+        return user;
+    }
 }

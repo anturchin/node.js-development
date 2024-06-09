@@ -1,35 +1,35 @@
-import { Request, Response } from 'express';
-import Course from '../../models/course/Course';
+import { NextFunction, Request, Response } from 'express';
 import { ICourse } from '../../models/course/types';
+import { CoursesService } from '../../services/coursesService/CoursesService';
 
 class CourseController {
-    public async getAllCourses(req: Request, res: Response): Promise<void> {
+    private readonly coursesService: CoursesService;
+
+    constructor(coursesService: CoursesService) {
+        this.coursesService = coursesService;
+    }
+
+    public async getAllCourses(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const courses = await this.findCourses();
+            const courses = await this.coursesService.findCourses();
             res.status(200).send(courses);
         } catch (err) {
-            if (err instanceof Error) {
-                res.status(500).send({ message: 'Error fetching courses', error: err.message });
-            }
+            next(err);
         }
     }
 
-    public async createCourse(req: Request, res: Response): Promise<void> {
+    public async createCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { title, description, difficulty } = req.body;
-            const course = new Course({ title, description, difficulty });
-            await course.save();
+            await this.coursesService.createCourse({
+                title,
+                description,
+                difficulty,
+            } as ICourse);
             res.status(201).send({ message: 'Course created successfully' });
         } catch (err) {
-            if (err instanceof Error) {
-                res.status(500).send({ message: 'Error creating course', error: err.message });
-            }
+            next(err);
         }
-    }
-
-    private async findCourses(): Promise<ICourse[]> {
-        const user = await Course.find().exec();
-        return user;
     }
 }
 
