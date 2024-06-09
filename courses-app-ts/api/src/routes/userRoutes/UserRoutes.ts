@@ -6,9 +6,9 @@ class UserRoutes {
 
     private readonly userController: UserController;
 
-    constructor() {
+    constructor(userController: UserController) {
         this.router = express.Router();
-        this.userController = new UserController();
+        this.userController = userController;
         this.initializeRoutes();
     }
 

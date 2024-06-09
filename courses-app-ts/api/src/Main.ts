@@ -13,7 +13,7 @@ class Main {
     }
 
     public async run(): Promise<void> {
-        const dbUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/courses';
+        const dbUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/best-courses-ever';
         await DataBase.connect(dbUri);
 
         this.onError(this.server);

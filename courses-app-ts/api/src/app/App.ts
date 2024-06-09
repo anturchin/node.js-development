@@ -4,6 +4,8 @@ import AuthRoutes from '../routes/authRoutes/AuthRoutes';
 import CourseRoutes from '../routes/courseRoutes/CourseRoutes';
 import UserRoutes from '../routes/userRoutes/UserRoutes';
 import AppError from '../utils/AppError';
+import UserController from '../controllers/userController/UserController';
+import { UserService } from '../services/userService/UserService';
 
 class App {
     private app: Express;
@@ -24,7 +26,10 @@ class App {
     private initializeRoutes(): void {
         this.app.use('/api/auth', new AuthRoutes().getRouter());
         this.app.use('/api/courses', new CourseRoutes().getRouter());
-        this.app.use('/api/users', new UserRoutes().getRouter());
+        this.app.use(
+            '/api/users',
+            new UserRoutes(new UserController(new UserService())).getRouter()
+        );
 
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             next(new AppError(`Cannot find path: ${req.originalUrl} on this server!`, 404));
