@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import Course from '../../models/course/Course';
+import { ICourse } from '../../models/course/types';
 
 class CourseController {
     public async getAllCourses(req: Request, res: Response): Promise<void> {
         try {
-            const courses = await Course.find();
+            const courses = await this.findCourses();
             res.status(200).send(courses);
         } catch (err) {
             if (err instanceof Error) {
@@ -15,8 +16,8 @@ class CourseController {
 
     public async createCourse(req: Request, res: Response): Promise<void> {
         try {
-            const { title, description } = req.body;
-            const course = new Course({ title, description });
+            const { title, description, difficulty } = req.body;
+            const course = new Course({ title, description, difficulty });
             await course.save();
             res.status(201).send({ message: 'Course created successfully' });
         } catch (err) {
@@ -24,6 +25,11 @@ class CourseController {
                 res.status(500).send({ message: 'Error creating course', error: err.message });
             }
         }
+    }
+
+    private async findCourses(): Promise<ICourse[]> {
+        const user = await Course.find().exec();
+        return user;
     }
 }
 

@@ -4,14 +4,6 @@ import { IUser } from '../../models/user/types';
 import AppError from '../../utils/AppError';
 
 class AuthController {
-    private async findUser({
-        email,
-        password,
-    }: Pick<IUser, 'email' | 'password'>): Promise<IUser | null> {
-        const user = await User.findOne({ email, password }).exec();
-        return user;
-    }
-
     public async register(req: Request, res: Response): Promise<void> {
         try {
             const { email, username, password } = req.body;
@@ -39,6 +31,14 @@ class AuthController {
                 res.status(500).send({ message: 'Error login user', error: err.message });
             }
         }
+    }
+
+    private async findUser({
+        email,
+        password,
+    }: Pick<IUser, 'email' | 'password'>): Promise<IUser | null> {
+        const user = await User.findOne({ email, password }).exec();
+        return user;
     }
 }
 
