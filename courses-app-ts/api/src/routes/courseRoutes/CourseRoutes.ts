@@ -19,6 +19,24 @@ class CourseRoutes {
     private initializeRoutes(): void {
         this.router.get('/', this.courseController.getAllCourses.bind(this.courseController));
         this.router.post('/', this.courseController.createCourse.bind(this.courseController));
+        this.router.post('/comments', this.courseController.addComment.bind(this.courseController));
+        this.router.get(
+            '/comments/:courseId',
+            this.courseController.getComments.bind(this.courseController)
+        );
+        this.router.delete(
+            '/comments/:commentId',
+            this.courseController.deleteComment.bind(this.courseController)
+        );
+        this.router.post('/ratings', this.courseController.addRating.bind(this.courseController));
+        this.router.get(
+            '/ratings/:courseId',
+            this.courseController.getRatings.bind(this.courseController)
+        );
+        this.router.delete(
+            '/ratings/:ratingId',
+            this.courseController.deleteRating.bind(this.courseController)
+        );
     }
 }
 
