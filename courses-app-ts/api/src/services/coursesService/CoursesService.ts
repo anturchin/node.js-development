@@ -9,9 +9,10 @@ export class CoursesService {
         return courses;
     }
 
-    public async createCourse({ title, description, difficulty }: ICourse): Promise<void> {
+    public async createCourse({ title, description, difficulty }: ICourse): Promise<string> {
         const course = new Course({ title, description, difficulty });
         await course.save();
+        return course.id;
     }
 
     public async addCommentToCourse(courseId: string, comment: IComment): Promise<boolean> {

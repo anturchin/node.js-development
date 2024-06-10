@@ -1,4 +1,3 @@
-import { describe, expect, test, beforeAll, afterAll, beforeEach } from '@jest/globals';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import App from '../app/App';
@@ -12,6 +11,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+    await DataBase.clearCollections();
     await DataBase.disconnect();
 });
 
@@ -21,7 +21,7 @@ describe('Auth API', () => {
             .post('/api/auth/register')
             .send({ username: 'testuser', email: 'testuser@example.com', password: 'password' });
         expect(response.statusCode).toBe(201);
-        expect(response.body).toHaveProperty('message', 'User registered successfully');
+        expect(response.body).toHaveProperty('message', 'User created successfully');
     });
 
     test('should login a user', async () => {

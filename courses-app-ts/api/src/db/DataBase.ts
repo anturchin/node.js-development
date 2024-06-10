@@ -19,6 +19,13 @@ class DataBase {
             if (err instanceof Error) console.error('MongoDB disconnection failed', err.message);
         }
     }
+
+    static async clearCollections(): Promise<void> {
+        const collections = Object.values(mongoose.connection.collections);
+        const clearCollectionPromises = collections.map((collection) => collection.deleteMany({}));
+        await Promise.all(clearCollectionPromises);
+        console.log('MongoDB collections cleared successfully');
+    }
 }
 
 export default DataBase;

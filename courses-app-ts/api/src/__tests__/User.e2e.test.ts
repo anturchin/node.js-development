@@ -1,4 +1,3 @@
-import { describe, expect, test } from '@jest/globals';
 import request from 'supertest';
 import App from '../app/App';
 
@@ -13,6 +12,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+    await DataBase.clearCollections();
     await DataBase.disconnect();
 });
 

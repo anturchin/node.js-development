@@ -30,16 +30,16 @@ class CourseController {
             if (!userId || !content || !courseId) {
                 throw new AppError('UserId, content, and courseId are required', 400);
             }
-            const newComment = await this.commentService.createNewComment({
+            const { comment, commentId } = await this.commentService.createNewComment({
                 userId,
                 content,
                 courseId,
             } as IComment);
-            const addedComment = this.coursesService.addCommentToCourse(courseId, newComment);
+            const addedComment = await this.coursesService.addCommentToCourse(courseId, comment);
             if (!addedComment) {
                 throw new AppError('Comment add failed', 400);
             }
-            res.status(201).send({ message: 'Comment added successfully', newComment });
+            res.status(201).send({ message: 'Comment added successfully', commentId, comment });
         } catch (err) {
             next(err);
         }
@@ -77,7 +77,7 @@ class CourseController {
                 courseId,
             } as IRating);
 
-            const addedRating = this.coursesService.addRatingToCourse(courseId, newRating);
+            const addedRating = await this.coursesService.addRatingToCourse(courseId, newRating);
             if (!addedRating) {
                 throw new AppError('Rating add failed', 400);
             }
@@ -126,12 +126,16 @@ class CourseController {
     public async createCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { title, description, difficulty } = req.body;
-            await this.coursesService.createCourse({
+            const courseId = await this.coursesService.createCourse({
                 title,
                 description,
                 difficulty,
             } as ICourse);
-            res.status(201).send({ message: 'Course created successfully' });
+
+            res.status(201).send({
+                message: 'Course created successfully',
+                courseId,
+            });
         } catch (err) {
             next(err);
         }

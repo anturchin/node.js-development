@@ -21,7 +21,7 @@ class CourseRoutes {
         this.router.post('/', this.courseController.createCourse.bind(this.courseController));
         this.router.post('/comments', this.courseController.addComment.bind(this.courseController));
         this.router.get(
-            '/comments/:courseId',
+            '/:courseId/comments',
             this.courseController.getComments.bind(this.courseController)
         );
         this.router.delete(
@@ -30,7 +30,7 @@ class CourseRoutes {
         );
         this.router.post('/ratings', this.courseController.addRating.bind(this.courseController));
         this.router.get(
-            '/ratings/:courseId',
+            '/:courseId/ratings',
             this.courseController.getRatings.bind(this.courseController)
         );
         this.router.delete(
