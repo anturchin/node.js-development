@@ -4,6 +4,9 @@ import DataBase from './db/DataBase';
 import App from './app/App';
 
 class Main {
+    private readonly dbUri: string =
+        process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/best-courses';
+
     private readonly port: number = parseInt(process.env.PORT || '', 10) || 8000;
 
     private readonly server: http.Server;
@@ -13,8 +16,7 @@ class Main {
     }
 
     public async run(): Promise<void> {
-        const dbUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/best-courses-ever';
-        await DataBase.connect(dbUri);
+        await DataBase.connect(this.dbUri);
 
         this.onError(this.server);
         this.server.listen(this.port, () => {

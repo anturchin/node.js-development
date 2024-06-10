@@ -9,6 +9,8 @@ import { UserService } from '../services/userService/UserService';
 import CourseController from '../controllers/courseController/CourseController';
 import { CoursesService } from '../services/coursesService/CoursesService';
 import AuthController from '../controllers/authController/AuthController';
+import { CommentService } from '../services/commentService/CommentService';
+import { RatingService } from '../services/ratingService/RatingService';
 
 class App {
     private app: Express;
@@ -33,7 +35,13 @@ class App {
         );
         this.app.use(
             '/api/courses',
-            new CourseRoutes(new CourseController(new CoursesService())).getRouter()
+            new CourseRoutes(
+                new CourseController(
+                    new CoursesService(),
+                    new CommentService(),
+                    new RatingService()
+                )
+            ).getRouter()
         );
         this.app.use(
             '/api/users',
