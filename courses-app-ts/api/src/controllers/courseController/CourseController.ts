@@ -3,10 +3,10 @@ import { CoursesService } from '../../services/coursesService/CoursesService';
 import { CommentService } from '../../services/commentService/CommentService';
 import { RatingService } from '../../services/ratingService/RatingService';
 import AppError from '../../utils/AppError';
-import { IComment } from '../../models/comment/types';
 import { IUpdateCourseDTO } from '../../dto/courseDto/UpdateCourseDto';
 import { ICreateCourseDto } from '../../dto/courseDto/CreateCourseDto';
 import { ICreateRatingDto } from '../../dto/ratingDto/CreateRatingDto';
+import { ICreateCommentDto } from '../../dto/commentDto/CreateCommentDto';
 
 class CourseController {
     private readonly coursesService: CoursesService;
@@ -27,7 +27,7 @@ class CourseController {
 
     public async addComment(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { userId, content, courseId } = req.body;
+            const { userId, content, courseId }: ICreateCommentDto = req.body;
             if (!userId || !content || !courseId) {
                 throw new AppError('UserId, content, and courseId are required', 400);
             }
@@ -35,7 +35,7 @@ class CourseController {
                 userId,
                 content,
                 courseId,
-            } as IComment);
+            });
 
             const addedComment = await this.coursesService.addCommentToCourse(courseId, newComment);
             if (!addedComment) {
@@ -69,7 +69,7 @@ class CourseController {
 
     public async addRating(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { userId, rating, courseId } = req.body;
+            const { userId, rating, courseId }: ICreateRatingDto = req.body;
             if (!userId || !rating || !courseId) {
                 throw new AppError('UserId, rating, and courseId are required', 400);
             }
@@ -77,7 +77,7 @@ class CourseController {
                 userId,
                 rating,
                 courseId,
-            } as ICreateRatingDto);
+            });
 
             const addedRating = await this.coursesService.addRatingToCourse(courseId, newRating);
             if (!addedRating) {

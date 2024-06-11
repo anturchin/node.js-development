@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { ICreateCourseDto } from '../../dto/courseDto/CreateCourseDto';
 import { IUpdateCourseDTO } from '../../dto/courseDto/UpdateCourseDto';
-import { IComment } from '../../models/comment/types';
+import { ICommentDocument } from '../../models/comment/types';
 import Course from '../../models/course/Course';
 import { ICourseDocument } from '../../models/course/types';
 import { IRatingDocument } from '../../models/rating/types';
@@ -42,7 +42,7 @@ export class CoursesService {
         return deletedCourse;
     }
 
-    public async addCommentToCourse(courseId: string, comment: IComment): Promise<boolean> {
+    public async addCommentToCourse(courseId: string, comment: ICommentDocument): Promise<boolean> {
         const foundCourse = await this.findCourseById(courseId);
         if (foundCourse) {
             foundCourse.comments.push(comment.id);
