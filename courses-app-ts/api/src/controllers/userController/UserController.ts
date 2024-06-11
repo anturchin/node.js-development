@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { IUser, Role } from '../../models/user/types';
+import { Role } from '../../models/user/types';
 import AppError from '../../utils/AppError';
 import { UserService } from '../../services/userService/UserService';
+import { ICreateUserDto } from '../../dto/userDto/CreateUserDto';
 
 class UserController {
     private readonly userService: UserService;
@@ -12,7 +13,7 @@ class UserController {
 
     public async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { email, username, password } = req.body;
+            const { email, username, password }: ICreateUserDto = req.body;
 
             if (!email || !username || !password) {
                 throw new AppError('Email, username, and password are required', 400);
@@ -27,7 +28,7 @@ class UserController {
                     email,
                     username,
                     password,
-                } as IUser);
+                });
                 res.status(201).send({
                     message: 'User created successfully',
                     username: user.username,
