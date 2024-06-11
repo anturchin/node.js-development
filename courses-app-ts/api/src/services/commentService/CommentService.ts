@@ -2,15 +2,10 @@ import { IComment } from '../../models/comment/types';
 import Comment from '../../models/comment/Comment';
 
 export class CommentService {
-    public async createNewComment(
-        commentData: IComment
-    ): Promise<{ comment: IComment; commentId: string }> {
+    public async createNewComment(commentData: IComment): Promise<IComment> {
         const newComment = new Comment(commentData);
         await newComment.save();
-        return {
-            comment: newComment,
-            commentId: newComment.id,
-        };
+        return newComment;
     }
 
     public async findCommentsByCourseId(courseId: string): Promise<IComment[]> {

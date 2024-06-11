@@ -57,7 +57,7 @@ describe('Course API', () => {
         };
         const response = await request(app).post('/api/courses/comments').send(newComment);
 
-        commentId = response.body.commentId;
+        commentId = response.body.newComment._id;
 
         expect(response.statusCode).toBe(201);
         expect(response.body.message).toBe('Comment added successfully');

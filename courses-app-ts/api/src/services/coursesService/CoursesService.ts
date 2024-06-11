@@ -15,6 +15,11 @@ export class CoursesService {
         return course.id;
     }
 
+    public async deleteCourseById(courseId: string): Promise<ICourse | null> {
+        const deletedCourse = await Course.findByIdAndDelete(courseId).exec();
+        return deletedCourse;
+    }
+
     public async addCommentToCourse(courseId: string, comment: IComment): Promise<boolean> {
         const foundCourse = await Course.findById(courseId).exec();
         if (foundCourse) {

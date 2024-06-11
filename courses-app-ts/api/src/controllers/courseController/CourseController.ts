@@ -30,16 +30,17 @@ class CourseController {
             if (!userId || !content || !courseId) {
                 throw new AppError('UserId, content, and courseId are required', 400);
             }
-            const { comment, commentId } = await this.commentService.createNewComment({
+            const newComment = await this.commentService.createNewComment({
                 userId,
                 content,
                 courseId,
             } as IComment);
-            const addedComment = await this.coursesService.addCommentToCourse(courseId, comment);
+
+            const addedComment = await this.coursesService.addCommentToCourse(courseId, newComment);
             if (!addedComment) {
                 throw new AppError('Comment add failed', 400);
             }
-            res.status(201).send({ message: 'Comment added successfully', commentId, comment });
+            res.status(201).send({ message: 'Comment added successfully', newComment });
         } catch (err) {
             next(err);
         }
@@ -118,6 +119,22 @@ class CourseController {
         try {
             const courses = await this.coursesService.findCourses();
             res.status(200).send(courses);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    public async deleteCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { courseId } = req.params;
+            if (!courseId) {
+                throw new AppError('CourseId is required', 400);
+            }
+            const deletedCourse = await this.coursesService.deleteCourseById(courseId);
+            if (!deletedCourse) {
+                throw new AppError('Course not found', 404);
+            }
+            res.status(200).send({ message: 'Course deleted successfully', deletedCourse });
         } catch (err) {
             next(err);
         }
