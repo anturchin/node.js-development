@@ -1,10 +1,15 @@
 import { Types } from 'mongoose';
-import { IRating } from '../../rating/types';
 
-export interface ICourse extends Document {
+export interface ICourse {
+    id: Types.ObjectId;
     title: string;
     description: string;
     difficulty: string;
     comments: Types.ObjectId[];
-    ratings: IRating[];
+    ratings: Types.ObjectId[];
+}
+
+export interface ICourseDocument extends ICourse {
+    _id?: Types.ObjectId;
+    save: () => Promise<ICourseDocument>;
 }

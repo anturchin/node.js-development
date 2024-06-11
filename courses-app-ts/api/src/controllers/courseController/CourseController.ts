@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { ICourse } from '../../models/course/types';
 import { CoursesService } from '../../services/coursesService/CoursesService';
 import { CommentService } from '../../services/commentService/CommentService';
 import { RatingService } from '../../services/ratingService/RatingService';
 import AppError from '../../utils/AppError';
-import { IRating } from '../../models/rating/types';
 import { IComment } from '../../models/comment/types';
+import { IUpdateCourseDTO } from '../../dto/courseDto/UpdateCourseDto';
+import { ICreateCourseDto } from '../../dto/courseDto/CreateCourseDto';
+import { ICreateRatingDto } from '../../dto/ratingDto/CreateRatingDto';
 
 class CourseController {
     private readonly coursesService: CoursesService;
@@ -76,7 +77,7 @@ class CourseController {
                 userId,
                 rating,
                 courseId,
-            } as IRating);
+            } as ICreateRatingDto);
 
             const addedRating = await this.coursesService.addRatingToCourse(courseId, newRating);
             if (!addedRating) {
@@ -105,10 +106,10 @@ class CourseController {
     public async deleteRating(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { ratingId } = req.params;
-            if (!ratingId) {
-                throw new AppError('RatingId is required', 400);
-            }
             const deletedRating = await this.ratingService.deleteRating(ratingId);
+            if (!deletedRating) {
+                throw new AppError('Rating not found', 404);
+            }
             res.status(200).send({ message: 'Rating deleted successfully', deletedRating });
         } catch (err) {
             next(err);
@@ -124,12 +125,22 @@ class CourseController {
         }
     }
 
+    public async getCourseById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { courseId } = req.params;
+            const courses = await this.coursesService.findCourseById(courseId);
+            if (!courses) {
+                throw new AppError('Course not found', 404);
+            }
+            res.status(200).send(courses);
+        } catch (err) {
+            next(err);
+        }
+    }
+
     public async deleteCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { courseId } = req.params;
-            if (!courseId) {
-                throw new AppError('CourseId is required', 400);
-            }
             const deletedCourse = await this.coursesService.deleteCourseById(courseId);
             if (!deletedCourse) {
                 throw new AppError('Course not found', 404);
@@ -142,17 +153,31 @@ class CourseController {
 
     public async createCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { title, description, difficulty } = req.body;
+            const { title, description, difficulty }: ICreateCourseDto = req.body;
             const courseId = await this.coursesService.createCourse({
                 title,
                 description,
                 difficulty,
-            } as ICourse);
+            });
 
             res.status(201).send({
                 message: 'Course created successfully',
                 courseId,
             });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    public async updateCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { courseId } = req.params;
+            const updateData: IUpdateCourseDTO = req.body;
+            const updateCourse = await this.coursesService.updateCourseById(courseId, updateData);
+            if (!updateCourse) {
+                throw new AppError('Course not found', 404);
+            }
+            res.status(200).send({ message: 'Course updated successfully', updateCourse });
         } catch (err) {
             next(err);
         }

@@ -1,5 +1,5 @@
 import mongoose, { Model, Schema, Types } from 'mongoose';
-import { ICourse } from './types';
+import { ICourseDocument } from './types';
 
 const courseSchema: Schema = new Schema(
     {
@@ -12,6 +12,6 @@ const courseSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-const Course: Model<ICourse> = mongoose.model<ICourse>('courses', courseSchema);
+const Course: Model<ICourseDocument> = mongoose.model<ICourseDocument>('courses', courseSchema);
 
 export default Course;

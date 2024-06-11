@@ -23,6 +23,14 @@ class CourseRoutes {
             '/:courseId',
             this.courseController.deleteCourse.bind(this.courseController)
         );
+        this.router.put(
+            '/:courseId',
+            this.courseController.updateCourse.bind(this.courseController)
+        );
+        this.router.get(
+            '/:courseId',
+            this.courseController.getCourseById.bind(this.courseController)
+        );
         this.router.post('/comments', this.courseController.addComment.bind(this.courseController));
         this.router.get(
             '/:courseId/comments',
