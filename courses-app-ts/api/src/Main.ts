@@ -5,7 +5,7 @@ import App from './app/App';
 
 class Main {
     private readonly dbUri: string =
-        process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/best-courses';
+        process.env.MONGODB_URI || 'mongodb://mongodb:27017/best-courses';
 
     private readonly port: number = parseInt(process.env.PORT || '', 10) || 8000;
 
