@@ -4,7 +4,13 @@ import AuthRoutes from '../routes/authRoutes/AuthRoutes';
 import CourseRoutes from '../routes/courseRoutes/CourseRoutes';
 import UserRoutes from '../routes/userRoutes/UserRoutes';
 import AppError from '../utils/AppError';
-import DataBase from '../db/DataBase';
+import UserController from '../controllers/userController/UserController';
+import { UserService } from '../services/userService/UserService';
+import CourseController from '../controllers/courseController/CourseController';
+import { CoursesService } from '../services/coursesService/CoursesService';
+import AuthController from '../controllers/authController/AuthController';
+import { CommentService } from '../services/commentService/CommentService';
+import { RatingService } from '../services/ratingService/RatingService';
 
 class App {
     private app: Express;
@@ -23,9 +29,24 @@ class App {
     }
 
     private initializeRoutes(): void {
-        this.app.use('/api/auth', new AuthRoutes().getRouter());
-        this.app.use('/api/courses', new CourseRoutes().getRouter());
-        this.app.use('/api/users', new UserRoutes().getRouter());
+        this.app.use(
+            '/api/auth',
+            new AuthRoutes(new AuthController(new UserService())).getRouter()
+        );
+        this.app.use(
+            '/api/courses',
+            new CourseRoutes(
+                new CourseController(
+                    new CoursesService(),
+                    new CommentService(),
+                    new RatingService()
+                )
+            ).getRouter()
+        );
+        this.app.use(
+            '/api/users',
+            new UserRoutes(new UserController(new UserService())).getRouter()
+        );
 
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             next(new AppError(`Cannot find path: ${req.originalUrl} on this server!`, 404));
@@ -50,8 +71,7 @@ class App {
         );
     }
 
-    private async init(): Promise<void> {
-        await DataBase.connect();
+    private init(): void {
         this.initializeMiddleware();
         this.initializeRoutes();
         this.initializeErrorHandling();

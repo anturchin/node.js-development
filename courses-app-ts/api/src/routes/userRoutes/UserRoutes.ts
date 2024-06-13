@@ -6,9 +6,9 @@ class UserRoutes {
 
     private readonly userController: UserController;
 
-    constructor() {
+    constructor(userController: UserController) {
         this.router = express.Router();
-        this.userController = new UserController();
+        this.userController = userController;
         this.initializeRoutes();
     }
 
@@ -18,6 +18,16 @@ class UserRoutes {
 
     private initializeRoutes(): void {
         this.router.get('/', this.userController.getAllUsers.bind(this.userController));
+        this.router.post('/', this.userController.createUser.bind(this.userController));
+        this.router.get('/:userId', this.userController.getUserById.bind(this.userController));
+        this.router.delete(
+            '/:userId',
+            this.userController.deleteUserById.bind(this.userController)
+        );
+        this.router.put(
+            '/:userId/:role',
+            this.userController.updateUserRole.bind(this.userController)
+        );
     }
 }
 
