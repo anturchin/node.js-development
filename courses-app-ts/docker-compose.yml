@@ -25,4 +25,4 @@ services:
   #   volumes:
   #     - ./client:/app
   #   depends_on:
-  #     - backend
+  #     - api
