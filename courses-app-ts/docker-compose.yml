@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    container_name: mongodb
+
+
+  api:
+    build: ./api
+    restart: always
+    ports:
+      - '8000:8000'
+    volumes:
+      - /app/node_modules
+      - ./api:/app
+    depends_on:
+      - db
+
+  # client:
+  #   build: ./client
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - ./client:/app
+  #   depends_on:
+  #     - backend
