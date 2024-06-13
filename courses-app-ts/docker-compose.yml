@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  api:
+    build: ./api
+    restart: always
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./api:/app
+    depends_on:
+      - mongodb
+
+  # frontend:
+  #   build: ./frontend
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - ./frontend:/app
+  #   depends_on:
+  #     - backend
