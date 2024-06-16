@@ -1,9 +1,12 @@
 services:
   db:
     image: mongo
+    container_name: mongodb
+    restart: always
     ports:
       - "27017:27017"
-    container_name: mongodb
+    volumes:
+      - mongo_data:/data/db
 
 
   api:
@@ -23,6 +26,10 @@ services:
   #   ports:
   #     - '3000:3000'
   #   volumes:
+  #     - /app/node_modules
   #     - ./client:/app
   #   depends_on:
   #     - api
+
+volumes:
+  mongo_data:
