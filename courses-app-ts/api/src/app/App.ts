@@ -32,10 +32,10 @@ class App {
     }
 
     private initializeRoutes(): void {
-        this.app.use(
-            '/api/auth',
-            new AuthRoutes(new AuthController(new UserService())).getRouter()
-        );
+        const salt = parseInt(process.env.SALT_ROUND as string, 10);
+        const userService = new UserService(salt);
+
+        this.app.use('/api/auth', new AuthRoutes(new AuthController(userService)).getRouter());
         this.app.use(
             '/api/courses',
             new CourseRoutes(
@@ -46,10 +46,7 @@ class App {
                 )
             ).getRouter()
         );
-        this.app.use(
-            '/api/users',
-            new UserRoutes(new UserController(new UserService())).getRouter()
-        );
+        this.app.use('/api/users', new UserRoutes(new UserController(userService)).getRouter());
 
         this.app.use((req: Request, _: Response, next: NextFunction) => {
             next(new AppError(`Cannot find path: ${req.originalUrl} on this server!`, 404));
