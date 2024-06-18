@@ -1,6 +1,8 @@
-FROM node:alpine
+FROM node
 
 WORKDIR /app
+
+RUN apt update && apt install -y build-essential
 
 COPY package*.json ./
 

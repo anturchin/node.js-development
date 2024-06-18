@@ -1,15 +1,23 @@
+import bcrypt from 'bcrypt';
 import { ICreateUserDto } from '../../dto/userDto/CreateUserDto';
 import { IUserDocument, Role } from '../../models/user/types';
 import User from '../../models/user/User';
 
 export class UserService {
+    private salt: number;
+
+    constructor(salt: number) {
+        this.salt = salt;
+    }
+
     public async findByIdAndDelete(userId: string): Promise<IUserDocument | null> {
         const user = await User.findByIdAndDelete(userId).exec();
         return user;
     }
 
     public async createUser(newUser: ICreateUserDto): Promise<IUserDocument> {
-        const user = new User(newUser);
+        const hash = await bcrypt.hash(newUser.password, this.salt);
+        const user = new User({ ...newUser, password: hash });
         await user.save();
         return user;
     }
@@ -43,7 +51,10 @@ export class UserService {
         email,
         password,
     }: Pick<IUserDocument, 'email' | 'password'>): Promise<IUserDocument | null> {
-        const user = await User.findOne({ email, password }).exec();
-        return user;
+        const user = await User.findOne({ email }).exec();
+        if (user && (await bcrypt.compare(password, user.password))) {
+            return user;
+        }
+        return null;
     }
 }

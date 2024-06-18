@@ -43,8 +43,11 @@ class UserController {
 
     public async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+            if (!req.user) {
+                throw new AppError('Not authorized', 401);
+            }
             const users = await this.userService.findUsers();
-            res.status(200).send(users);
+            res.status(200).send({ users });
         } catch (err) {
             next(err);
         }
@@ -52,6 +55,9 @@ class UserController {
 
     public async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+            if (!req.user) {
+                throw new AppError('Not authorized', 401);
+            }
             const { userId } = req.params;
             const user = await this.userService.findUserById(userId);
             if (user) {
@@ -66,6 +72,10 @@ class UserController {
 
     public async updateUserRole(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+            if (!req.user) {
+                throw new AppError('Not authorized', 401);
+            }
+
             const { userId } = req.params;
             const { role } = req.params;
 
@@ -85,6 +95,10 @@ class UserController {
 
     public async deleteUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+            if (!req.user) {
+                throw new AppError('Not authorized', 401);
+            }
+
             const { userId } = req.params;
             const user = await this.userService.findByIdAndDelete(userId);
             if (user) {

@@ -11,6 +11,7 @@ import { CoursesService } from '../services/coursesService/CoursesService';
 import AuthController from '../controllers/authController/AuthController';
 import { CommentService } from '../services/commentService/CommentService';
 import { RatingService } from '../services/ratingService/RatingService';
+import AuthMiddleware from '../middleware/AuthMiddleware';
 
 class App {
     private app: Express;
@@ -26,13 +27,15 @@ class App {
 
     private initializeMiddleware(): void {
         this.app.use(bodyParser.json());
+        const authMiddleware = new AuthMiddleware(process.env.SECRET_KEY as string);
+        this.app.use(authMiddleware.execute.bind(authMiddleware));
     }
 
     private initializeRoutes(): void {
-        this.app.use(
-            '/api/auth',
-            new AuthRoutes(new AuthController(new UserService())).getRouter()
-        );
+        const salt = parseInt(process.env.SALT_ROUND as string, 10);
+        const userService = new UserService(salt);
+
+        this.app.use('/api/auth', new AuthRoutes(new AuthController(userService)).getRouter());
         this.app.use(
             '/api/courses',
             new CourseRoutes(
@@ -43,19 +46,16 @@ class App {
                 )
             ).getRouter()
         );
-        this.app.use(
-            '/api/users',
-            new UserRoutes(new UserController(new UserService())).getRouter()
-        );
+        this.app.use('/api/users', new UserRoutes(new UserController(userService)).getRouter());
 
-        this.app.use((req: Request, res: Response, next: NextFunction) => {
+        this.app.use((req: Request, _: Response, next: NextFunction) => {
             next(new AppError(`Cannot find path: ${req.originalUrl} on this server!`, 404));
         });
     }
 
     private initializeErrorHandling(): void {
         this.app.use(
-            (err: AppError | Error, req: Request, res: Response, next: NextFunction): void => {
+            (err: AppError | Error, _: Request, res: Response, next: NextFunction): void => {
                 if (err instanceof AppError) {
                     res.status(err.statusCode).json({
                         status: err.statusCode,
