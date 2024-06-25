@@ -1,9 +1,11 @@
 .title {
     text-align: center;
+    color: rgba(0, 0, 0, 0.4);
 }
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -27,39 +29,56 @@ body {
     padding: 10px;
     overflow-y: auto;
     border-bottom: 1px solid #ccc;
+    scrollbar-width: thin;
+    scrollbar-color: #4CAF50 #e0e0e0;
 }
 
 .chat-window p {
     margin: 0;
-    padding: 5px;
+    padding: 15px;
     border-radius: 4px;
-    background-color: #e1ffc7;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
 }
 
+.left {
+    text-align: right;
+    color: #45a049;
+}
+
+.right {
+    color: brown;
+}
+
 #chat-input {
+    display: flex;
     border: none;
     padding: 10px;
     font-size: 16px;
-    flex-shrink: 0;
-    width: calc(100% - 80px);
-    box-sizing: border-box;
+}
+
+#chat-input::placeholder {
+    text-align: center;
+}
+
+#chat-input:focus {
+    outline: none;
 }
 
 #send-button {
+    display: flex;
+    margin: 2px;
+    justify-content: center;
     border: none;
+    border-radius: 5px;
     padding: 10px;
     font-size: 16px;
     background-color: #4CAF50;
     color: white;
     cursor: pointer;
-    width: 80px;
+    transition: all .3s ease-out;
 }
 
 #send-button:hover {
     background-color: #45a049;
-}
-
-input, button {
-    border-top: 1px solid #ccc;
 }
