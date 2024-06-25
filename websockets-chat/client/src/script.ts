@@ -40,7 +40,7 @@ class Chat {
         const message = this.chatInput.value.trim();
         if (message) {
             this.worker.postMessage({ type: 'send', message: message });
-            this.addMessageToChatWindow(`( you ): ${message}`, true);
+            this.addMessageToChatWindow(`( you ) ${message}`, true);
             this.chatInput.value = '';
         }
     }
