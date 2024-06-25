@@ -4,7 +4,7 @@ import http from 'node:http';
 
 export class ChatServer {
 
-    private readonly ws: WebSocketServer;
+    private readonly socket: WebSocketServer;
     private readonly server: http.Server;
     private readonly port: number;
     private readonly connections: Set<WebSocket> = new Set();
@@ -13,7 +13,7 @@ export class ChatServer {
         this.port = parseInt(process.env.PORT || '8080');
         this.server = http.createServer(this.createHttpServer.bind(this));
         this.serverRun();
-        this.ws = new WebSocketServer({ server: this.server });
+        this.socket = new WebSocketServer({ server: this.server });
         this.onConnection();
     }
 
@@ -30,7 +30,7 @@ export class ChatServer {
     }
 
     private onConnection(): void {
-        this.ws.on('connection', (connection, _) => {
+        this.socket.on('connection', (connection, _) => {
 
             this.connections.add(connection);
             console.log(`New connection. Total connections: ${this.connections.size}`);
@@ -44,7 +44,7 @@ export class ChatServer {
                 console.error(`Connection error: ${error.message}`);
                 this.connections.delete(connection);
             });
-            
+
         });
     }
 
