@@ -9,11 +9,11 @@ class ChatWorker {
     public start(url: string) {
         this.socket = new WebSocket(url);
 
-        this.socket.addEventListener('message', (messageEvent) => {
+        this.socket.addEventListener('message', (messageEvent: MessageEvent) => {
             this.handleMessage(messageEvent.data);
         });
 
-        this.socket.addEventListener('error', (error) => {
+        this.socket.addEventListener('error', (error: Event) => {
             if(error instanceof Error){
                 console.error(`WebSocket error: ${error.message}`);
             }
@@ -37,7 +37,7 @@ class ChatWorker {
 
 const chatWorker = new ChatWorker();
 
-self.addEventListener('message', (event) => {
+self.addEventListener('message', (event: MessageEvent) => {
     if (typeof event.data === 'string') {
         chatWorker.start(event.data);
     } else if (event.data.type === 'send') {
