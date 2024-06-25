@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import http from 'node:http';
 
 
@@ -6,9 +6,11 @@ export class ChatServer {
 
     private readonly ws: WebSocketServer;
     private readonly server: http.Server;
-    private readonly port: number = parseInt(process.env.PORT || '') || 8080;
+    private readonly port: number;
+    private readonly connections: Set<WebSocket> = new Set();
 
     constructor() {
+        this.port = parseInt(process.env.PORT || '8080');
         this.server = http.createServer(this.createHttpServer.bind(this));
         this.serverRun();
         this.ws = new WebSocketServer({ server: this.server });
@@ -19,7 +21,7 @@ export class ChatServer {
         _: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
-        res.writeHead(200);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'connection chat server' }));
     }
 
@@ -28,23 +30,34 @@ export class ChatServer {
     }
 
     private onConnection(): void {
-        this.ws.on('connection', (connection, req) => {
-            const ip: string | undefined = req.socket.remoteAddress;
-            console.log(`Connected ${ip}`);
+        this.ws.on('connection', (connection, _) => {
 
-            connection.on('message', (message) => {
-                console.log('Received: ' + message);
-                for (const client of this.ws.clients) {
-                    if (client.readyState !== WebSocket.OPEN) continue;
-                    if (client === connection) continue;
-                    client.send(message, { binary: false });
-                }
-            });
+            this.connections.add(connection);
+            console.log(`New connection. Total connections: ${this.connections.size}`);
 
+            connection.on('message', (message: string) => this.broadcastMessage(connection, message));
             connection.on('close', () => {
-                console.log(`Disconnected ${ip}`);
+                this.connections.delete(connection);
+                console.log(`Connection closed. Total connections: ${this.connections.size}`);
             });
+            connection.on('error', (error: Error) => {
+                console.error(`Connection error: ${error.message}`);
+                this.connections.delete(connection);
+            });
+            
         });
+    }
+
+    private broadcastMessage(sender: WebSocket, message: string): void {
+        for (const client of this.connections) {
+            if (client.readyState === WebSocket.OPEN && client !== sender) {
+                client.send(message, { binary: false }, (err) => {
+                    if (err) {
+                        console.error(`Failed to send message: ${err.message}`);
+                    }
+                });
+            }
+        }
     }
 }
 
