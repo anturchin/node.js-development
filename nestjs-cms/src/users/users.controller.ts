@@ -52,4 +52,11 @@ export class UsersController {
     if (!user) return { message: 'User not found' };
     return user;
   }
+
+  @Put(':id/status')
+  public changeStatus(@Param('id') id: string): User | ErrorMessage {
+    const user = this.usersService.changeStatus(id);
+    if (!user) return { message: 'User not found' };
+    return user;
+  }
 }
