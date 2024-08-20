@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
-import { ErrorMessage, User } from './users.interface';
+import { ErrorUser, User } from './users.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -19,12 +19,12 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  public findAll(): User[] {
+  public getUsers(): User[] {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  public findById(@Param('id') id: string): User | ErrorMessage {
+  public getUserById(@Param('id') id: string): User | ErrorUser {
     const user = this.usersService.findById(id);
     if (!user) return { message: 'User not found' };
     return user;
@@ -32,29 +32,29 @@ export class UsersController {
 
   @Post()
   @HttpCode(204)
-  public create(@Body() createUserDto: CreateUserDto): void {
+  public createUser(@Body() createUserDto: CreateUserDto): void {
     return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
-  public update(
+  public updateUser(
     @Param('id') id: string,
     @Body() updateUser: UpdateUserDto,
-  ): User | ErrorMessage {
+  ): User | ErrorUser {
     const user = this.usersService.update(id, updateUser);
     if (!user) return { message: 'User not found' };
     return user;
   }
 
   @Delete(':id')
-  public delete(@Param('id') id: string): User | ErrorMessage {
+  public deleteUser(@Param('id') id: string): User | ErrorUser {
     const user = this.usersService.delete(id);
     if (!user) return { message: 'User not found' };
     return user;
   }
 
   @Put(':id/status')
-  public changeStatus(@Param('id') id: string): User | ErrorMessage {
+  public changeStatus(@Param('id') id: string): User | ErrorUser {
     const user = this.usersService.changeStatus(id);
     if (!user) return { message: 'User not found' };
     return user;
@@ -63,7 +63,7 @@ export class UsersController {
   public changeRole(
     @Param('id') id: string,
     @Body() { role }: Pick<UpdateUserDto, 'role'>,
-  ): User | ErrorMessage {
+  ): User | ErrorUser {
     const user = this.usersService.changeRole(id, role);
     if (!user) return { message: 'User not found' };
     return user;

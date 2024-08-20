@@ -10,6 +10,6 @@ export interface User {
   role: Role;
 }
 
-export interface ErrorMessage {
+export interface ErrorUser {
   message: string;
 }
