@@ -59,4 +59,13 @@ export class UsersController {
     if (!user) return { message: 'User not found' };
     return user;
   }
+  @Put(':id/role')
+  public changeRole(
+    @Param('id') id: string,
+    @Body() { role }: Pick<UpdateUserDto, 'role'>,
+  ): User | ErrorMessage {
+    const user = this.usersService.changeRole(id, role);
+    if (!user) return { message: 'User not found' };
+    return user;
+  }
 }

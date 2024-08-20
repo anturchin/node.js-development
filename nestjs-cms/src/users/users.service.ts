@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
-import { User } from './users.interface';
+import { Role, User } from './users.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   private users: User[] = [
-    { id: '1', name: 'ann', isActive: true },
-    { id: '2', name: 'zik', isActive: true },
-    { id: '3', name: 'bek', isActive: false },
+    { id: '1', name: 'ann', isActive: true, role: Role.Admin },
+    { id: '2', name: 'zik', isActive: true, role: Role.User },
+    { id: '3', name: 'bek', isActive: false, role: Role.User },
   ];
 
   public findAll(): User[] {
@@ -21,8 +21,8 @@ export class UsersService {
     return this.users.find((user) => user.id === id) || null;
   }
 
-  public create(user: CreateUserDto): void {
-    this.users.push({ id: uuidv4(), name: user.name, isActive: true });
+  public create(createUser: CreateUserDto): void {
+    this.users.push({ id: uuidv4(), ...createUser, isActive: true });
   }
 
   public update(id: string, updateUser: UpdateUserDto): User | null {
@@ -43,6 +43,13 @@ export class UsersService {
     const user = this.findById(id);
     if (!user) return null;
     user.isActive = !user.isActive;
+    return user;
+  }
+
+  public changeRole(id: string, role: Role): User | null {
+    const user = this.findById(id);
+    if (!user) return null;
+    user.role = role;
     return user;
   }
 }
