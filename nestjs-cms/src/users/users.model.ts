@@ -3,7 +3,7 @@ export const enum Role {
   Admin = 'admin',
 }
 
-export interface User {
+export interface UserModel {
   id: string;
   name: string;
   isActive: boolean;

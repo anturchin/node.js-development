@@ -3,70 +3,70 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
-import { User } from './users.model';
+import { UserModel } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ErrorMessage } from '../types';
+import { SuccessMessage } from '../types';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  public getUsers(): User[] {
+  public getUsers(): UserModel[] {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  public getUserById(@Param('id') id: string): User | ErrorMessage {
+  public getUserById(@Param('id') id: string): UserModel {
     const user = this.usersService.findById(id);
-    if (!user) return { message: 'User not found' };
+    if (!user) throw new NotFoundException('User not found');
     return user;
   }
 
   @Post()
-  @HttpCode(204)
-  public createUser(@Body() createUserDto: CreateUserDto): void {
-    return this.usersService.create(createUserDto);
+  public createUser(@Body() createUserDto: CreateUserDto): SuccessMessage {
+    this.usersService.create(createUserDto);
+    return { message: 'User created!' };
   }
 
   @Put(':id')
   public updateUser(
     @Param('id') id: string,
     @Body() updateUser: UpdateUserDto,
-  ): User | ErrorMessage {
+  ): UserModel {
     const user = this.usersService.update(id, updateUser);
-    if (!user) return { message: 'User not found' };
+    if (!user) throw new NotFoundException('User not found');
     return user;
   }
 
   @Delete(':id')
-  public deleteUser(@Param('id') id: string): User | ErrorMessage {
+  public deleteUser(@Param('id') id: string): SuccessMessage {
     const user = this.usersService.delete(id);
-    if (!user) return { message: 'User not found' };
-    return user;
+    if (!user) throw new NotFoundException('User not found');
+    return { message: 'User deleted successfully!' };
   }
 
   @Put(':id/status')
-  public changeStatus(@Param('id') id: string): User | ErrorMessage {
+  public changeStatus(@Param('id') id: string): UserModel {
     const user = this.usersService.changeStatus(id);
-    if (!user) return { message: 'User not found' };
+    if (!user) throw new NotFoundException('User not found');
     return user;
   }
   @Put(':id/role')
   public changeRole(
     @Param('id') id: string,
     @Body() { role }: Pick<UpdateUserDto, 'role'>,
-  ): User | ErrorMessage {
+  ): UserModel {
     const user = this.usersService.changeRole(id, role);
-    if (!user) return { message: 'User not found' };
+    if (!user) throw new NotFoundException('User not found');
     return user;
   }
 }

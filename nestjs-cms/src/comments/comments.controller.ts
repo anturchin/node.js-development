@@ -3,29 +3,30 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 
 import { CommentsService } from './comments.service';
-import { Comment } from './comments.model';
+import { CommentModel } from './comments.model';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { ErrorMessage } from '../types';
+import { SuccessMessage } from '../types';
 
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Get()
-  public getComments(): Comment[] {
+  public getComments(): CommentModel[] {
     return this.commentsService.findAll();
   }
   @Get(':id')
-  public getCommentById(@Param('id') id: string): Comment | ErrorMessage {
+  public getCommentById(@Param('id') id: string): CommentModel {
     const comment = this.commentsService.findById(id);
-    if (!comment) return { message: 'Comment not found' };
+    if (!comment) throw new NotFoundException('Comment not found');
     return comment;
   }
 
@@ -33,21 +34,22 @@ export class CommentsController {
   public updateComment(
     @Param('id') id: string,
     @Body() updateComment: UpdateCommentDto,
-  ): Comment | ErrorMessage {
+  ): CommentModel {
     const comment = this.commentsService.update(id, updateComment);
-    if (!comment) return { message: 'Comment not found' };
+    if (!comment) throw new NotFoundException('Comment not found');
     return comment;
   }
 
   @Post()
-  public createComment(createCommentDto: CreateCommentDto): void {
-    return this.commentsService.create(createCommentDto);
+  public createComment(createCommentDto: CreateCommentDto): SuccessMessage {
+    this.commentsService.create(createCommentDto);
+    return { message: 'Comment created' };
   }
 
   @Delete(':id')
-  public deleteComment(@Param('id') id: string): Comment | ErrorMessage {
+  public deleteComment(@Param('id') id: string): CommentModel {
     const comment = this.commentsService.delete(id);
-    if (!comment) return { message: 'Comment not found' };
+    if (!comment) throw new NotFoundException('Comment not found');
     return comment;
   }
 }
