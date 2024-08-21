@@ -9,9 +9,10 @@ import {
 } from '@nestjs/common';
 
 import { CommentsService } from './comments.service';
-import { Comment, ErrorComment } from './comments.interface';
+import { Comment } from './comments.model';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { ErrorMessage } from '../types';
 
 @Controller('comments')
 export class CommentsController {
@@ -22,7 +23,7 @@ export class CommentsController {
     return this.commentsService.findAll();
   }
   @Get(':id')
-  public getCommentById(@Param('id') id: string): Comment | ErrorComment {
+  public getCommentById(@Param('id') id: string): Comment | ErrorMessage {
     const comment = this.commentsService.findById(id);
     if (!comment) return { message: 'Comment not found' };
     return comment;
@@ -32,7 +33,7 @@ export class CommentsController {
   public updateComment(
     @Param('id') id: string,
     @Body() updateComment: UpdateCommentDto,
-  ): Comment | ErrorComment {
+  ): Comment | ErrorMessage {
     const comment = this.commentsService.update(id, updateComment);
     if (!comment) return { message: 'Comment not found' };
     return comment;
@@ -44,7 +45,7 @@ export class CommentsController {
   }
 
   @Delete(':id')
-  public deleteComment(@Param('id') id: string): Comment | ErrorComment {
+  public deleteComment(@Param('id') id: string): Comment | ErrorMessage {
     const comment = this.commentsService.delete(id);
     if (!comment) return { message: 'Comment not found' };
     return comment;

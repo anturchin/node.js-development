@@ -10,9 +10,10 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
-import { ErrorUser, User } from './users.interface';
+import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ErrorMessage } from '../types';
 
 @Controller('users')
 export class UsersController {
@@ -24,7 +25,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  public getUserById(@Param('id') id: string): User | ErrorUser {
+  public getUserById(@Param('id') id: string): User | ErrorMessage {
     const user = this.usersService.findById(id);
     if (!user) return { message: 'User not found' };
     return user;
@@ -40,21 +41,21 @@ export class UsersController {
   public updateUser(
     @Param('id') id: string,
     @Body() updateUser: UpdateUserDto,
-  ): User | ErrorUser {
+  ): User | ErrorMessage {
     const user = this.usersService.update(id, updateUser);
     if (!user) return { message: 'User not found' };
     return user;
   }
 
   @Delete(':id')
-  public deleteUser(@Param('id') id: string): User | ErrorUser {
+  public deleteUser(@Param('id') id: string): User | ErrorMessage {
     const user = this.usersService.delete(id);
     if (!user) return { message: 'User not found' };
     return user;
   }
 
   @Put(':id/status')
-  public changeStatus(@Param('id') id: string): User | ErrorUser {
+  public changeStatus(@Param('id') id: string): User | ErrorMessage {
     const user = this.usersService.changeStatus(id);
     if (!user) return { message: 'User not found' };
     return user;
@@ -63,7 +64,7 @@ export class UsersController {
   public changeRole(
     @Param('id') id: string,
     @Body() { role }: Pick<UpdateUserDto, 'role'>,
-  ): User | ErrorUser {
+  ): User | ErrorMessage {
     const user = this.usersService.changeRole(id, role);
     if (!user) return { message: 'User not found' };
     return user;

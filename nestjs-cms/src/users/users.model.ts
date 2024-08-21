@@ -9,7 +9,3 @@ export interface User {
   isActive: boolean;
   role: Role;
 }
-
-export interface ErrorUser {
-  message: string;
-}
